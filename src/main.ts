@@ -2,7 +2,8 @@ import { config } from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
+// import * as cookieParser from 'cookie-parser';
+import cookieParser = require('cookie-parser');
 
 async function bootstrap() {
   config();

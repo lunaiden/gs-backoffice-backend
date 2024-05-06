@@ -1,12 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 import { Session } from './session.entity';
 import { File } from '../../file/entities/file.entity';
 
@@ -30,4 +32,17 @@ export class SessionMember {
   @OneToOne(() => File, { nullable: true })
   @JoinColumn({ name: 'presentation_file' })
   presentationFile: File;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
 }

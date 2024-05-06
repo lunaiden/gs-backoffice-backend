@@ -1,10 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './role.entity';
 import { JoinColumn } from 'typeorm';
@@ -23,16 +26,22 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ length: 50, name: 'last_name' })
+  @Column()
+  password: string;
+
+  @Column({ length: 50, name: 'last_name', nullable: true })
   lastName: string;
 
-  @Column({ length: 50, name: 'first_name' })
+  @Column({ length: 50, name: 'first_name', nullable: true })
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   phone: number;
 
-  @OneToOne(() => Role)
+  @Column({ type: 'timestamptz', nullable: true })
+  lastLogin: Date;
+
+  @ManyToOne(() => Role, { nullable: true, eager: true })
   @JoinColumn()
   role: Role;
 
@@ -53,4 +62,17 @@ export class User {
 
   @OneToMany(() => SessionMember, (sessionMember) => sessionMember.user)
   sessions: SessionMember[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
 }

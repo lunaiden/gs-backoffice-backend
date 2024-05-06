@@ -1,13 +1,16 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Address } from '../../address/entities/address.entity';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
+import { File } from '../../file/entities/file.entity';
 
 @Entity('company')
 export class Company {
@@ -29,10 +32,27 @@ export class Company {
   @Column({ default: false })
   isAutonomous: boolean;
 
+  @OneToOne(() => File, { nullable: true })
+  @JoinColumn({ name: 'logo' })
+  logo: File;
+
   @OneToOne(() => Address, { nullable: true })
   @JoinColumn()
   address: Address;
 
   @ManyToMany(() => User, (user) => user.companies)
   users: User[];
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  updated_at: Date;
 }

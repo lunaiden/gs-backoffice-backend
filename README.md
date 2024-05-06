@@ -43,6 +43,21 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+```
+
+## Use migrations
+
+```bash
+# generate migration file
+$ npm run migration:generate -- db/migrations/<migration_file_name>
+
+# run migrations
+$ npm run migration:run
+
+# revert last migration
+$ npm run migration:revert
+
 ```
 
 ## Test

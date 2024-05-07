@@ -5,3 +5,8 @@ export interface JwtPayload {
 
   roleName: string;
 }
+
+export interface JwtPasswordPayload {
+  userId: string;
+  email: string;
+}

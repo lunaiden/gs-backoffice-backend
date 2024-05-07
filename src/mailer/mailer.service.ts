@@ -16,7 +16,7 @@ export class MailerService {
           From: { Email: 'melanie.leeman@protonmail.com' },
           To: [{ Email: email }],
           Subject: 'Inscription',
-          HTMLPart: '<h3>Confirmation inscription</h3>',
+          HTMLPart: '<h4>Confirmation inscription</h4>',
         },
       ],
     };
@@ -41,8 +41,33 @@ export class MailerService {
           To: [{ Email: email }],
           Subject: 'Réinitialisation de mot de passe',
           HTMLPart: `<h3>Réinitialisation de mot de passe</h3>
-        <h5>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</h5>
-        <a href="${process.env.FRONT_URL}/reset_password?${token}">Réinitialiser mon mot de passe</a>`,
+        <h4>Pour réinitialiser votre mot de passe, cliquez sur ce lien :</h4>
+        <a href="${process.env.FRONT_URL}/reset-password/${token}">Réinitialiser mon mot de passe</a>`,
+        },
+      ],
+    };
+
+    try {
+      const result = await this.mailjet
+        .post('send', { version: 'v3.1' })
+        .request(message);
+
+      console.log('Email reset envoyé:', result.body);
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async sendResetPasswordConfirmation(email: string) {
+    const message = {
+      Messages: [
+        {
+          From: { Email: 'melanie.leeman@protonmail.com' },
+          To: [{ Email: email }],
+          Subject: 'Confirmation de réinitialisation du mot de passe',
+          HTMLPart: `<h3>Réinitialisation de mot de passe</h3>
+        <h4>Nous vous confirmons que la réinitialisation de votre mot de passe a été effectuée avec succès.</h4>
+        `,
         },
       ],
     };

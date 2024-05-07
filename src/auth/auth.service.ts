@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { MailerService } from '../mailer/mailer.service';
 import { JwtService } from '@nestjs/jwt';
@@ -6,8 +10,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInDto } from './dto/signIn.dto';
-import { JwtPayload } from './jwt-payload.interface';
+import { JwtPasswordPayload, JwtPayload } from './jwt-payload.interface';
 import { User } from './entities/user.entity';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { decrypt, encrypt } from '../utils/crypto';
 
 @Injectable()
 export class AuthService {
@@ -52,13 +58,11 @@ export class AuthService {
         email: email,
         roleName: user.role.name,
       };
-      const access_token = await this.jwtService.sign(payload);
+      const access_token = this.jwtService.sign(payload);
 
       user.lastLogin = new Date();
 
       await this.userRepository.save(user);
-
-      console.log('dans le main ', process.env.POSTGRES_DATABASE);
 
       return { access_token, user };
     } else {
@@ -71,14 +75,85 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
+      // generate jwt token
+      const payload = {
+        userId: user.id,
+        email: email,
+      };
+      const reset_token = await this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_PASSWORD_KEY,
+        expiresIn: '1d',
+      });
+
+      // encrypt token
+      const encryptedToken = encrypt(reset_token);
+
+      // send email with token
       await this.emailService
-        .sendResetPasswordLink(email, 'token')
+        .sendResetPasswordLink(email, encryptedToken)
         .catch((err) => {
           return new Error(err.message);
         });
     }
 
     return 'email sent';
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { token, password, confirmPassword } = resetPasswordDto;
+    // decrypt token
+    const decryptedToken = decrypt(token).toString();
+
+    // get payload
+    let payload: JwtPasswordPayload;
+    try {
+      payload = this.jwtService.verify(decryptedToken, {
+        secret: process.env.JWT_PASSWORD_KEY,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new InternalServerErrorException({ code: 'noToken' });
+    }
+
+    // recheck password
+    if (password !== confirmPassword) {
+      throw new InternalServerErrorException(
+        'Les mots de passe doivent être identiques',
+      );
+    }
+
+    // hash and store pwd
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    try {
+      await this.userRepository
+        .update(
+          { id: payload.userId, email: payload.email },
+          { password: hashedPassword },
+        )
+        .then((data) => {
+          if (data.affected === 0) {
+            throw new InternalServerErrorException(
+              'Une erreur est survenue pendant la mise à jour du mot de passe.',
+            );
+          }
+        })
+        .catch((err) => {
+          return err;
+        });
+    } catch (err) {
+      console.log(err);
+    }
+
+    // send confirmation mail
+    await this.emailService
+      .sendResetPasswordConfirmation(payload.email)
+      .catch((err) => {
+        return new Error(err.message);
+      });
+
+    return 'Mot de passe mis à jour';
   }
 
   findAll() {

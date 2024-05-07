@@ -16,18 +16,6 @@
         "PUT",
         "PATCH",
         "DELETE"
-      ],
-      "has": [
-        {
-          "type": "header",
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        },
-        {
-          "type": "header",
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://gs-backoffice-frontend.vercel.app"
-        }
       ]
     }
   ]

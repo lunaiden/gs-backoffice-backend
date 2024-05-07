@@ -16,7 +16,7 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot(dataSourceOptions),
+    TypeOrmModule.forRoot({ ...dataSourceOptions, autoLoadEntities: true }),
     FileModule,
     AddressModule,
     CompanyModule,

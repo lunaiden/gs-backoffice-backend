@@ -12,6 +12,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
+  console.log(process.env.FRONT_URL);
 }
 
 bootstrap();

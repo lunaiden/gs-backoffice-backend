@@ -4,11 +4,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import {
   ConflictException,
+  Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from './entities/role.entity';
 
+@Injectable()
 export class UserRepository extends Repository<User> {
   constructor(
     @InjectRepository(User)
@@ -25,6 +27,24 @@ export class UserRepository extends Repository<User> {
 
   async findByEmail(email: string): Promise<User | undefined> {
     return await this.findOneBy({ email });
+  }
+
+  public async createUserIfDontExist(createUserDto: CreateUserDto): Promise<void>
+  {
+    const user = await this.UserRepository.findOne({
+      where: {
+        email : createUserDto.email,
+      },
+    });
+
+    if(user === null)
+    {
+      try{
+        await this.createUser(createUserDto);
+      } catch (err) {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<void> {
@@ -53,5 +73,43 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  public async createRoleIfDontExist(roleName:string): Promise<void>
+  {
+    const role = await this.RoleRepository.findOne({
+      where: { name: roleName },
+    });
+
+    if(role === null)
+    {
+      try{
+        await this.createRole(roleName);
+      } catch (err) {
+        throw new InternalServerErrorException();
+      }
+    }
+  }
+
+  async createRole(roleName:string): Promise<void>
+  {
+    const role = await this.RoleRepository.create({
+      name:roleName
+    });
+
+    try {
+      await this.RoleRepository.save(role);
+    } catch (err) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async findRoleByName(roleName:string) : Promise<Role>
+  {
+    const role = await this.RoleRepository.findOne({
+      where: {name:roleName}
+    });
+
+    return role;
   }
 }

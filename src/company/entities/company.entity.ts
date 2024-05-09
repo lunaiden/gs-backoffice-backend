@@ -26,10 +26,10 @@ export class Company {
   @Column({ nullable: true })
   siret: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'no_tva', nullable: true })
   noTva: string;
 
-  @Column({ default: false })
+  @Column({ name: 'isAutonomous', default: false })
   isAutonomous: boolean;
 
   @OneToOne(() => File, { nullable: true })
@@ -37,7 +37,7 @@ export class Company {
   logo: File;
 
   @OneToOne(() => Address, { nullable: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'address_id' })
   address: Address;
 
   @ManyToMany(() => User, (user) => user.companies)

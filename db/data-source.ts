@@ -6,7 +6,7 @@ dotenvExpand.expand(dotenv.config());
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
   url: process.env.POSTGRES_URL,
-  entities: ['dist/src/**/*.entity{.ts,.js}'],
+  entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/db/migrations/*.js'],
 };
 

@@ -11,13 +11,13 @@ export class File {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'original_name' })
   originalFileName: string;
 
-  @Column()
+  @Column({ name: 'file_name' })
   fileName: string;
 
-  @Column()
+  @Column({ name: 'file_url' })
   fileUrl: string;
 
   @CreateDateColumn({

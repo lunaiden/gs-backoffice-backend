@@ -38,15 +38,15 @@ export class User {
   @Column({ nullable: true })
   phone: number;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: 'timestamptz', name: 'last_login', nullable: true })
   lastLogin: Date;
 
   @ManyToOne(() => Role, { nullable: true, eager: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'role_id' })
   role: Role;
 
   @OneToOne(() => Address, { nullable: true })
-  @JoinColumn()
+  @JoinColumn({ name: 'address_id' })
   address: Address;
 
   @OneToOne(() => File, { nullable: true })

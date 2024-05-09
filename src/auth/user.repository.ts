@@ -29,17 +29,17 @@ export class UserRepository extends Repository<User> {
     return await this.findOneBy({ email });
   }
 
-  public async createUserIfDontExist(createUserDto: CreateUserDto): Promise<void>
-  {
+  public async createUserIfDontExist(
+    createUserDto: CreateUserDto,
+  ): Promise<void> {
     const user = await this.UserRepository.findOne({
       where: {
-        email : createUserDto.email,
+        email: createUserDto.email,
       },
     });
 
-    if(user === null)
-    {
-      try{
+    if (user === null) {
+      try {
         await this.createUser(createUserDto);
       } catch (err) {
         throw new InternalServerErrorException();
@@ -75,15 +75,13 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  public async createRoleIfDontExist(roleName:string): Promise<void>
-  {
+  public async createRoleIfDontExist(roleName: string): Promise<void> {
     const role = await this.RoleRepository.findOne({
       where: { name: roleName },
     });
 
-    if(role === null)
-    {
-      try{
+    if (role === null) {
+      try {
         await this.createRole(roleName);
       } catch (err) {
         throw new InternalServerErrorException();
@@ -91,10 +89,9 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async createRole(roleName:string): Promise<void>
-  {
+  async createRole(roleName: string): Promise<void> {
     const role = await this.RoleRepository.create({
-      name:roleName
+      name: roleName,
     });
 
     try {
@@ -104,10 +101,9 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async findRoleByName(roleName:string) : Promise<Role>
-  {
+  async findRoleByName(roleName: string): Promise<Role> {
     const role = await this.RoleRepository.findOne({
-      where: {name:roleName}
+      where: { name: roleName },
     });
 
     return role;

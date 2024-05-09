@@ -19,6 +19,6 @@ export class GraphicCharter {
   secondaryColor: string;
 
   @OneToOne(() => Company)
-  @JoinColumn()
+  @JoinColumn({ name: 'company_id' })
   company: Company;
 }

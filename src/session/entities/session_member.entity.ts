@@ -24,9 +24,11 @@ export class SessionMember {
   speech: string;
 
   @ManyToOne(() => User, (user) => user.sessions)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @ManyToOne(() => Session, (session) => session.users)
+  @JoinColumn({ name: 'session_id' })
   session: Session;
 
   @OneToOne(() => File, { nullable: true })

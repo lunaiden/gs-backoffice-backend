@@ -20,10 +20,10 @@ export class Session {
   @Column()
   name: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ name: 'start_date', type: 'timestamptz' })
   startDate: Date;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ name: 'end_date', type: 'timestamptz' })
   endDate: Date;
 
   @OneToMany(() => Result, (result) => result.session)

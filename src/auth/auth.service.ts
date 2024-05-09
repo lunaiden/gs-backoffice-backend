@@ -7,7 +7,7 @@ import { UserRepository } from './user.repository';
 import { MailerService } from '../mailer/mailer.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SignInDto } from './dto/signIn.dto';
 import { JwtPasswordPayload, JwtPayload } from './jwt-payload.interface';

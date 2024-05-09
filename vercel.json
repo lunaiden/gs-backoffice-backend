@@ -9,6 +9,9 @@
   "routes": [
     {
       "src": "/(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://gs-backoffice-frontend.vercel.app"
+      },
       "dest": "src/main.ts",
       "methods": [
         "GET",

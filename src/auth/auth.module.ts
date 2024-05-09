@@ -11,11 +11,12 @@ import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { Role as RoleEnum } from './roles-enum';
 import { Address } from '../address/entities/address.entity';
+import { File } from '../file/entities/file.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([User, Role, Address]),
+    TypeOrmModule.forFeature([User, Role, Address, File]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,

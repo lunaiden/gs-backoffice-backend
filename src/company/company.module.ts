@@ -3,10 +3,11 @@ import { CompanyService } from './company.service';
 import { CompanyController } from './company.controller';
 import { AuthModule } from '../auth/auth.module';
 import { AddressModule } from '../address/address.module';
-import { CompanyRepository } from './company.repository';
+// import { CompanyRepository } from './company.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Address } from '../address/entities/address.entity';
+import { File } from '../file/entities/file.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { Address } from '../address/entities/address.entity';
     TypeOrmModule.forFeature([Company, Address, File]),
   ],
   controllers: [CompanyController],
-  providers: [CompanyService, CompanyRepository],
+  providers: [CompanyService],
 })
 export class CompanyModule {}

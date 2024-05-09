@@ -15,13 +15,13 @@ async function bootstrap() {
       '82.67.24.9:8080',
     ],
     credentials: true,
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin'],
     methods: ['GET', 'POST', 'OPTIONS', 'HEAD', 'PATCH', 'DELETE'],
     preflightContinue: true,
   });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.PORT);
+  await app.listen(3000);
 }
 
 bootstrap();

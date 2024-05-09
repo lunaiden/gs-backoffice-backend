@@ -12,11 +12,22 @@ import { ConfigModule } from '@nestjs/config';
 import { Role as RoleEnum } from './roles-enum';
 import { Address } from '../address/entities/address.entity';
 import { File } from '../file/entities/file.entity';
+import { Result } from './entities/result.entity';
+import { Company } from '../company/entities/company.entity';
+import { SessionMember } from '../session/entities/session_member.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([User, Role, Address, File]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Address,
+      File,
+      Result,
+      Company,
+      SessionMember,
+    ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,

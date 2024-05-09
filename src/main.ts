@@ -15,6 +15,9 @@ async function bootstrap() {
       '82.67.24.9:8080',
     ],
     credentials: true,
+    allowedHeaders: ['Content-Type'],
+    methods: ['GET', 'POST', 'OPTIONS', 'HEAD', 'PATCH', 'DELETE'],
+    preflightContinue: true,
   });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());

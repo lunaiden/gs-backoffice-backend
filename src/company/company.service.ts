@@ -1,28 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { CompanyRepository } from './company.repository';
+import { Address } from '../address/entities/address.entity';
+import { Company } from './entities/company.entity';
 
 @Injectable()
 export class CompanyService {
-  create(createCompanyDto: CreateCompanyDto) {
-    console.log(createCompanyDto);
-    return 'This action adds a new company';
+  constructor(private readonly companyRepository: CompanyRepository) {}
+
+  async create(createCompanyDto: CreateCompanyDto) {
+    return await this.companyRepository.createCompany(createCompanyDto);
   }
 
   findAll() {
-    return `This action returns all company`;
+    return this.companyRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  findOne(id: string) {
+    return this.companyRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    console.log(updateCompanyDto);
-    return `This action updates a #${id} company`;
+  update(id: string, updateCompanyDto: UpdateCompanyDto) {
+    return this.companyRepository.updateCompany(id, updateCompanyDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string) {
+    const company = await this.companyRepository.findOne({ where: { id } });
+    if (!company) throw new NotFoundException('Entreprise introuvable');
+
+    await this.companyRepository.dataSource.transaction(async (manager) => {
+      await manager.delete(Address, company.address.id);
+      return await manager.delete(Company, id);
+    });
   }
 }

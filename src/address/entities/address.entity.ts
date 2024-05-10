@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -29,11 +30,14 @@ export class Address {
   @Column({ length: 255, name: 'country' })
   country: string;
 
-  @OneToOne(() => User, { eager: true, onDelete: 'CASCADE' })
+  @OneToOne(() => User)
   user: User;
 
-  @OneToOne(() => Company, { eager: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Company)
   company: Company;
+
+  @OneToMany(() => Company, (company) => company.address)
+  companies: Company[];
 
   @CreateDateColumn({
     type: 'timestamp',

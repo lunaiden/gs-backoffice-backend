@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -36,7 +37,7 @@ export class Company {
   @JoinColumn({ name: 'logo' })
   logo: File;
 
-  @OneToOne(() => Address, { nullable: true })
+  @OneToOne(() => Address, { nullable: true, eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'address_id' })
   address: Address;
 
